@@ -164,10 +164,16 @@ h1{font-size:1.65rem;line-height:1.2;margin:0;letter-spacing:-.01em;text-wrap:ba
 /* ---------- calculator type switch ---------- */
 .nojs{background:var(--accent-soft);color:var(--fg);border:1px solid var(--accent);border-radius:10px;padding:12px 14px;font-size:.95rem;line-height:1.45}
 .fitnote{}
-html.fit .top,html.fit .foot{display:none}
-html.fit body{padding-block:6px}
-html.fit .cbox:not([open]){display:none}
-html.fit .cbox[open]{position:fixed;left:50%;top:8px;transform:translateX(-50%);width:min(400px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;z-index:50;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+html.fit .top,html.fit .foot,html.fs .top,html.fs .foot{display:none}
+html.fit body,html.fs body{padding-block:6px}
+html.fs,html.fs body{min-height:100%;background:var(--bg)}
+html.fit .cbox:not([open]),html.fs .cbox:not([open]){display:none}
+.toprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.fsbtn{appearance:none;display:inline-flex;align-items:center;gap:6px;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:99px;padding:8px 13px;font:700 13px var(--f-ui);cursor:pointer}
+.fsbtn svg{width:14px;height:14px}
+.fsbtn svg path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fsbtn:focus-visible{outline:2px solid var(--pick,var(--accent));outline-offset:2px}
+html.fit .cbox[open],html.fs .cbox[open]{position:fixed;left:50%;top:8px;transform:translateX(-50%);width:min(400px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;z-index:50;box-shadow:0 12px 40px rgba(0,0,0,.35)}
 .calccol{display:flex;flex-direction:column;gap:12px;min-width:0;align-items:center}
 .modesw{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:3px;gap:2px}
 .modesw button{appearance:none;border:0;background:transparent;color:var(--muted);font:700 14px var(--f-ui);padding:7px 16px;border-radius:99px;cursor:pointer}
@@ -181,6 +187,16 @@ html.fit .cbox[open]{position:fixed;left:50%;top:8px;transform:translateX(-50%);
 .sb84 .ind.s{background:var(--key-2nd);color:var(--key-2nd-fg)}
 .sb84 .ind.a{background:var(--alpha-key);color:var(--alpha-key-fg)}
 .v84{flex:1 1 0;min-height:0;overflow:hidden;position:relative;font-size:16px;line-height:1.3;display:flex;flex-direction:column}
+.gamefsbtn{position:absolute;bottom:5px;right:5px;opacity:.7;z-index:7;display:inline-flex;align-items:center;gap:5px;appearance:none;border:1px solid rgba(255,255,255,.5);background:rgba(20,24,34,.72);color:#fff;font:700 10.5px var(--f-ui);padding:4px 8px;border-radius:99px;cursor:pointer}
+.gamefsbtn svg{width:11px;height:11px}.gamefsbtn svg path{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gamefsbtn:hover{opacity:1}
+.gamefsbtn:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
+#gamefs{position:fixed;inset:0;z-index:1000;background:#05070d;display:flex;align-items:center;justify-content:center}
+#gamefs .gamecv{position:static;inset:auto;display:block}
+#gamefs .gfshint{position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#e8ecff;background:rgba(0,0,0,.55);font:600 13px var(--f-ui);padding:6px 14px;border-radius:99px;pointer-events:none;opacity:0;white-space:nowrap}
+#gamefs.fade .gfshint{animation:gfshint 3.2s ease forwards}
+@keyframes gfshint{0%,70%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#gamefs.fade .gfshint{animation:none;opacity:1}}
 .gamecv{position:absolute;inset:0;width:100%;height:100%;z-index:5;background:#fff;touch-action:none}
 .gwrap{flex:1 1 0;min-height:0;position:relative}
 #cv84{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -324,7 +340,7 @@ table.out td.lab{text-align:left;font-family:var(--f-ui);font-weight:700}
 <main class="wrap">
   <div class="calccol">
   <div class="nojs" id="nojs" role="alert"><b>The calculator couldn't start here.</b> This window is showing a preview that doesn't run the calculator's code. Download the file and open it in Chrome, Edge or Safari, or use the web link your teacher gave you.</div>
-  <div class="modesw" role="group" aria-label="Calculator type"><button type="button" id="ms-sci" aria-pressed="true">Scientific</button><button type="button" id="ms-gr" aria-pressed="false">Graphing</button></div>
+  <div class="toprow"><div class="modesw" role="group" aria-label="Calculator type"><button type="button" id="ms-sci" aria-pressed="true">Scientific</button><button type="button" id="ms-gr" aria-pressed="false">Graphing</button></div><button type="button" class="fsbtn" id="fsBtn" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg><span>Full screen</span></button></div>
   <section class="calc" id="calc" aria-label="Scientific calculator">
     <div class="brand"><b>Four-Line</b><button type="button" class="brandbtn" id="openColors">Colors</button><span>Scientific</span></div>
     <div class="lcd">
@@ -336,7 +352,7 @@ table.out td.lab{text-align:left;font-family:var(--f-ui);font-weight:700}
   </section>
   <section class="calc" id="calc84" aria-label="Graphing calculator" hidden>
     <div class="brand"><b>Four-Line</b><button type="button" class="brandbtn" id="openColors84">Colors</button><span>Graphing</span></div>
-    <div class="lcd84"><div class="sb84" id="sb84"></div><div class="v84" id="v84"></div><div class="gwrap" id="gwrap" hidden><canvas id="cv84"></canvas><div class="ov84" id="ov84"></div></div></div>
+    <div class="lcd84"><div class="sb84" id="sb84"></div><div class="v84" id="v84"></div><div class="gwrap" id="gwrap" hidden><canvas id="cv84"></canvas><div class="ov84" id="ov84"></div></div><button type="button" class="gamefsbtn" id="gameFsBtn" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>Full screen (F)</button></div>
     <div class="g5 keys84" id="keys84"></div>
   </section>
   <details class="cbox" id="colorsBox">
@@ -1456,7 +1472,7 @@ function paramPts(i){
 
 /* ---------- graph drawing ---------- */
 let gCache={key:null,c:null};
-function canvasSize(){ const dpr=window.devicePixelRatio||1; const w=Math.max(20,gwrap.clientWidth),h=Math.max(20,gwrap.clientHeight);
+function canvasSize(){ const dpr=(window.devicePixelRatio||1)*fitScale; const w=Math.max(20,gwrap.clientWidth),h=Math.max(20,gwrap.clientHeight);
   if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); } return {w,h,dpr}; }
 const gx=(x,w)=>(x-S.W.Xmin)/(S.W.Xmax-S.W.Xmin)*(w-1);
 const gy=(y,h)=>(S.W.Ymax-y)/(S.W.Ymax-S.W.Ymin)*(h-1);
@@ -2043,14 +2059,29 @@ const GC={bg:'#ffffff',ink:'#141414',dim:'#8a929c',green:'#1b9a2a',red:'#d6201c'
 function startGame(name){
   const host=g84.querySelector('.lcd84');
   const c=document.createElement('canvas'); c.className='gamecv'; c.setAttribute('aria-label',name+' game'); host.appendChild(c);
-  const dpr=window.devicePixelRatio||1, w=host.clientWidth, h=host.clientHeight;
+  const dpr=(window.devicePixelRatio||1)*fitScale, w=host.clientWidth, h=host.clientHeight;
   c.width=Math.round(w*dpr); c.height=Math.round(h*dpr); const ctx=c.getContext('2d'); ctx.scale(dpr,dpr);
   game={name,c,ctx,w,h,held:new Set(),state:'ready',score:0,t:0,last:performance.now(),raf:0,hi:hiGet(name)};
   GAMEDEF[name].init(game);
   const loop=now=>{ if(!game) return; const dt=Math.min(0.05,(now-game.last)/1000); game.last=now; if(game.state==='play') GAMEDEF[game.name].step(game,dt); GAMEDEF[game.name].draw(game); game.raf=requestAnimationFrame(loop); };
-  game.raf=requestAnimationFrame(loop);
+  game.raf=requestAnimationFrame(loop); updGameFsBtn();
 }
-function stopGame(){ if(!game) return; cancelAnimationFrame(game.raf); game.c.remove(); game=null; S.view='home'; render84(); }
+function stopGame(){ if(!game) return; if(game.fs) gameFs(false); cancelAnimationFrame(game.raf); game.c.remove(); game=null; S.view='home'; updGameFsBtn(); render84(); }
+/* full-screen game view (keyboard play) */
+function updGameFsBtn(){ $('gameFsBtn').hidden=!game||!!game.fs; }
+function sizeGameCanvas(){ const G=game; if(!G) return; const base=window.devicePixelRatio||1; let s;
+  if(G.fs){ s=Math.min(innerWidth/G.w,(innerHeight-4)/G.h); G.c.style.width=G.w*s+'px'; G.c.style.height=G.h*s+'px'; } else { G.c.style.width=''; G.c.style.height=''; s=fitScale; }
+  G.c.width=Math.round(G.w*base*s); G.c.height=Math.round(G.h*base*s); G.ctx.setTransform(base*s,0,0,base*s,0,0); }
+function gameFs(on){ const G=game; if(!G) return;
+  let wrap=$('gamefs'); if(!wrap){ wrap=document.createElement('div'); wrap.id='gamefs'; wrap.hidden=true; wrap.innerHTML='<div class="gfshint">Arrow keys move · Enter/Space acts · Esc leaves full screen</div>'; document.body.appendChild(wrap); }
+  if(on&&!G.fs){ G.fs=true; wrap.hidden=false; wrap.appendChild(G.c); sizeGameCanvas(); wrap.classList.remove('fade'); void wrap.offsetWidth; wrap.classList.add('fade');
+    const req=wrap.requestFullscreen||wrap.webkitRequestFullscreen; if(req){ try{ const r=req.call(wrap); if(r&&r.catch) r.catch(()=>{}); }catch(e){} } }
+  else if(!on&&G.fs){ G.fs=false; if(document.fullscreenElement===wrap||document.webkitFullscreenElement===wrap){ try{ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }catch(e){} }
+    g84.querySelector('.lcd84').appendChild(G.c); wrap.hidden=true; sizeGameCanvas(); }
+  updGameFsBtn(); }
+$('gameFsBtn').addEventListener('click',e=>{ e.stopPropagation(); e.currentTarget.blur(); gameFs(true); });
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{ const w=$('gamefs'); if(game&&game.fs&&w&&document.fullscreenElement!==w&&document.webkitFullscreenElement!==w) gameFs(false); else if(game&&game.fs) sizeGameCanvas(); }));
+addEventListener('resize',()=>{ if(game&&game.fs) sizeGameCanvas(); });
 function gameKey(id){
   if(!game) return;
   const D=GAMEDEF[game.name]; if(D.clearNotes) D.clearNotes();
@@ -2173,7 +2204,10 @@ const HOLD=new Set(['up','down','left','right','enter']);
 document.addEventListener('pointerdown',e=>{ if(!game) return; const b=e.target.closest('[data-k]'); if(b&&HOLD.has(b.dataset.k)) game.held.add(b.dataset.k); });
 ['pointerup','pointercancel','pointerleave'].forEach(t=>document.addEventListener(t,()=>{ if(game) game.held.clear(); }));
 const GKEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',Enter:'enter',' ':'enter',Escape:'clear',Backspace:'clear'};
-document.addEventListener('keydown',e=>{ if(!game) return; const id=GKEYS[e.key]; if(!id) return; e.preventDefault(); e.stopImmediatePropagation(); if(!e.repeat){ if(HOLD.has(id)) game.held.add(id); gameKey(id); } },true);
+document.addEventListener('keydown',e=>{ if(!game) return;
+  if((e.key==='f'||e.key==='F')&&!e.ctrlKey&&!e.metaKey){ e.preventDefault(); e.stopImmediatePropagation(); if(!e.repeat) gameFs(!game.fs); return; }
+  if(e.key==='Escape'&&game.fs){ e.preventDefault(); e.stopImmediatePropagation(); gameFs(false); return; }
+  const id=GKEYS[e.key]; if(!id) return; e.preventDefault(); e.stopImmediatePropagation(); if(!e.repeat){ if(HOLD.has(id)) game.held.add(id); gameKey(id); } },true);
 document.addEventListener('keyup',e=>{ if(!game) return; const id=GKEYS[e.key]; if(id) game.held.delete(id); },true);
 /* ---------- Wildling Quest: an original creature-collecting adventure ---------- */
 const WQ=(()=>{
@@ -2788,13 +2822,27 @@ GAMEDEF.comet={
 
 MENUS.apps=()=>[mk('APPLICATIONS',[['Snake',()=>startGame('snake')],['Pong',()=>startGame('pong')],["Pip's Run",()=>startGame('jump')],['Wildling Quest',()=>startGame('quest')],['Comet Patrol',()=>startGame('comet')]])];
 
-/* ================= fit-to-window mode (embeds) ================= */
-if(document.documentElement.classList.contains('fit')){
-  const col=document.querySelector('.calccol'), cb=$('colorsBox'); document.body.appendChild(cb);
-  const fit=()=>{ const h=col.offsetHeight, k=Math.min(1,(window.innerHeight-12)/h);
-    col.style.transformOrigin='top center'; col.style.transform=k<1?`scale(${k})`:''; col.style.marginBottom=k<1?`${-h*(1-k)}px`:''; };
-  new ResizeObserver(fit).observe(col); window.addEventListener('resize',fit); fit();
+/* ================= fit-to-window + full screen ================= */
+var fitScale=1;
+const colEl=document.querySelector('.calccol'), cbEl=$('colorsBox'), cbHome=cbEl.parentNode, HTMLEL=document.documentElement;
+const fitOn=()=>HTMLEL.classList.contains('fit')||HTMLEL.classList.contains('fs');
+function fitNow(){
+  colEl.style.transform=''; colEl.style.marginBottom=''; const was=fitScale; fitScale=1;
+  if(fitOn()){ const h=colEl.offsetHeight, w=colEl.offsetWidth; let k=Math.min((innerHeight-12)/h,(innerWidth-24)/w);
+    k=HTMLEL.classList.contains('fs')?Math.min(k,2.6):Math.min(1,k); fitScale=k;
+    if(Math.abs(k-1)>.001){ colEl.style.transformOrigin='top center'; colEl.style.transform=`scale(${k})`; colEl.style.marginBottom=`${h*(k-1)}px`; } }
+  if(Math.abs(was-fitScale)>.01&&typeof calcMode!=='undefined'&&calcMode==='graph'&&!game){ gCache.key=null; render84(); }
 }
+function placeColors(){ if(fitOn()){ if(cbEl.parentNode!==document.body) document.body.appendChild(cbEl); } else if(cbEl.parentNode!==cbHome) cbHome.appendChild(cbEl); }
+new ResizeObserver(fitNow).observe(colEl); addEventListener('resize',fitNow);
+const fsActive=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+function setFs(on){ HTMLEL.classList.toggle('fs',on); const b=$('fsBtn'); b.setAttribute('aria-pressed',String(on)); b.querySelector('span').textContent=on?'Exit full screen':'Full screen'; placeColors(); fitNow(); }
+$('fsBtn').addEventListener('click',e=>{ e.currentTarget.blur();
+  if(HTMLEL.classList.contains('fs')){ if(fsActive()){ try{ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }catch(err){} } setFs(false); return; }
+  const req=HTMLEL.requestFullscreen||HTMLEL.webkitRequestFullscreen;
+  if(req){ try{ const r=req.call(HTMLEL); if(r&&r.then) r.then(()=>setFs(true),()=>setFs(true)); else setFs(true); }catch(err){ setFs(true); } } else setFs(true); });
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{ if(!fsActive()&&HTMLEL.classList.contains('fs')&&!HTMLEL.dataset.focusOnly) setFs(false); }));
+placeColors(); fitNow();
 
 /* ================= boot ================= */
 function seq(ids){ ids.forEach(press); }
