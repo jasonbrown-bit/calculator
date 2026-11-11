@@ -193,6 +193,23 @@ html.fit .cbox[open],html.fs .cbox[open]{position:fixed;left:50%;top:8px;transfo
 .gamefsbtn:focus-visible{outline:2px solid var(--alt);outline-offset:2px}
 #gamefs{position:fixed;inset:0;z-index:1000;background:#05070d;display:flex;align-items:center;justify-content:center}
 #gamefs .gamecv{position:static;inset:auto;display:block}
+#gamefs{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#gamefs.port{justify-content:flex-start;padding-top:calc(52px + env(safe-area-inset-top,0px))}
+.gfx-exit{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));left:calc(8px + env(safe-area-inset-left,0px));z-index:3;appearance:none;border:1px solid rgba(255,255,255,.45);background:rgba(20,24,34,.8);color:#fff;font:700 14px var(--f-ui);padding:9px 14px;border-radius:99px;cursor:pointer}
+.gfx-exit:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.gfx-ctrl{display:none;position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom,0px));padding:0 calc(16px + env(safe-area-inset-left,0px)) 0 calc(16px + env(safe-area-inset-left,0px));justify-content:space-between;align-items:flex-end;pointer-events:none;z-index:2}
+#gamefs.touch .gfx-ctrl{display:flex}
+#gamefs.touch:not(.port) .gfx-ctrl{top:0;bottom:0;align-items:center}
+.gfx-pad{pointer-events:auto;display:grid;grid-template-columns:repeat(3,58px);grid-template-rows:repeat(3,58px)}
+.gfx-pad button,.gfx-ab button{appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;font:700 20px var(--f-ui);touch-action:none;cursor:pointer}
+.gfx-pad button:active,.gfx-ab button:active{background:rgba(255,255,255,.35)}
+.gfx-pad .u{grid-area:1/2;border-radius:12px 12px 4px 4px}.gfx-pad .l{grid-area:2/1;border-radius:12px 4px 4px 12px}.gfx-pad .r{grid-area:2/3;border-radius:4px 12px 12px 4px}.gfx-pad .d{grid-area:3/2;border-radius:4px 4px 12px 12px}
+.gfx-ab{pointer-events:auto;display:flex;gap:14px;align-items:center}
+.gfx-ab button{width:74px;height:74px;border-radius:50%;font-size:15px}
+.gfx-ab .gfx-a{background:rgba(47,199,184,.45);border-color:rgba(127,255,240,.7)}
+.gfx-ab .gfx-b{width:60px;height:60px;transform:translateY(-22px)}
+#gamefs.noback .gfx-b{display:none}
+#gamefs.touch .gfshint{display:none}
 #gamefs .gfshint{position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#e8ecff;background:rgba(0,0,0,.55);font:600 13px var(--f-ui);padding:6px 14px;border-radius:99px;pointer-events:none;opacity:0;white-space:nowrap}
 #gamefs.fade .gfshint{animation:gfshint 3.2s ease forwards}
 @keyframes gfshint{0%,70%{opacity:1}100%{opacity:0}}
@@ -2070,10 +2087,23 @@ function stopGame(){ if(!game) return; if(game.fs) gameFs(false); cancelAnimatio
 /* full-screen game view (keyboard play) */
 function updGameFsBtn(){ $('gameFsBtn').hidden=!game||!!game.fs; }
 function sizeGameCanvas(){ const G=game; if(!G) return; const base=window.devicePixelRatio||1; let s;
-  if(G.fs){ s=Math.min(innerWidth/G.w,(innerHeight-4)/G.h); G.c.style.width=G.w*s+'px'; G.c.style.height=G.h*s+'px'; } else { G.c.style.width=''; G.c.style.height=''; s=fitScale; }
+  if(G.fs){ const wrap=$('gamefs'), touch=wrap.classList.contains('touch'), portrait=innerHeight>=innerWidth;
+    let aw=innerWidth, ah=innerHeight-4;
+    if(touch&&portrait){ ah=innerHeight-56-210; wrap.classList.add('port'); } else { wrap.classList.remove('port'); if(touch){ aw=innerWidth-2*Math.min(190,innerWidth*.24); ah=innerHeight-8; } }
+    s=Math.max(.3,Math.min(aw/G.w,ah/G.h)); G.c.style.width=G.w*s+'px'; G.c.style.height=G.h*s+'px'; } else { G.c.style.width=''; G.c.style.height=''; s=fitScale; }
   G.c.width=Math.round(G.w*base*s); G.c.height=Math.round(G.h*base*s); G.ctx.setTransform(base*s,0,0,base*s,0,0); }
 function gameFs(on){ const G=game; if(!G) return;
-  let wrap=$('gamefs'); if(!wrap){ wrap=document.createElement('div'); wrap.id='gamefs'; wrap.hidden=true; wrap.innerHTML='<div class="gfshint">Arrow keys move · Enter/Space acts · Esc leaves full screen</div>'; document.body.appendChild(wrap); }
+  let wrap=$('gamefs'); if(!wrap){ wrap=document.createElement('div'); wrap.id='gamefs'; wrap.hidden=true;
+    wrap.innerHTML='<div class="gfshint">Arrow keys move · Enter/Space acts · Esc leaves full screen</div>'+
+      '<button type="button" class="gfx-exit" aria-label="Exit full screen">✕ Exit</button>'+
+      '<div class="gfx-ctrl"><div class="gfx-pad" role="group" aria-label="Arrows"><button type="button" data-g="up" class="u" aria-label="Up">▲</button><button type="button" data-g="left" class="l" aria-label="Left">◀</button><button type="button" data-g="right" class="r" aria-label="Right">▶</button><button type="button" data-g="down" class="d" aria-label="Down">▼</button></div>'+
+      '<div class="gfx-ab"><button type="button" data-g="clear" class="gfx-b">Back</button><button type="button" data-g="enter" class="gfx-a">Enter</button></div></div>';
+    document.body.appendChild(wrap);
+    wrap.querySelector('.gfx-exit').addEventListener('click',e=>{ e.preventDefault(); gameFs(false); });
+    wrap.addEventListener('pointerdown',e=>{ const b=e.target.closest('[data-g]'); if(!b||!game) return; e.preventDefault(); gameKey(b.dataset.g); });
+    wrap.addEventListener('contextmenu',e=>e.preventDefault()); }
+  const touch=('ontouchstart' in window)||navigator.maxTouchPoints>0||matchMedia('(any-pointer: coarse)').matches;
+  wrap.classList.toggle('touch',touch); wrap.classList.toggle('noback',!(GAMEDEF[G.name]&&GAMEDEF[G.name].ownsClear));
   if(on&&!G.fs){ G.fs=true; wrap.hidden=false; wrap.appendChild(G.c); sizeGameCanvas(); wrap.classList.remove('fade'); void wrap.offsetWidth; wrap.classList.add('fade');
     const req=wrap.requestFullscreen||wrap.webkitRequestFullscreen; if(req){ try{ const r=req.call(wrap); if(r&&r.catch) r.catch(()=>{}); }catch(e){} } }
   else if(!on&&G.fs){ G.fs=false; if(document.fullscreenElement===wrap||document.webkitFullscreenElement===wrap){ try{ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }catch(e){} }
@@ -2201,8 +2231,10 @@ const GAMEDEF={
 };
 // hold tracking for on-screen arrows and keyboard
 const HOLD=new Set(['up','down','left','right','enter']);
-document.addEventListener('pointerdown',e=>{ if(!game) return; const b=e.target.closest('[data-k]'); if(b&&HOLD.has(b.dataset.k)) game.held.add(b.dataset.k); });
-['pointerup','pointercancel','pointerleave'].forEach(t=>document.addEventListener(t,()=>{ if(game) game.held.clear(); }));
+const PMAP=new Map();
+document.addEventListener('pointerdown',e=>{ if(!game) return; const b=e.target.closest('[data-k],[data-g]'); const id=b&&(b.dataset.g||b.dataset.k); if(id&&HOLD.has(id)){ game.held.add(id); PMAP.set(e.pointerId,id); } });
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{ const id=PMAP.get(e.pointerId); if(id===undefined) return; PMAP.delete(e.pointerId); if(game&&![...PMAP.values()].includes(id)) game.held.delete(id); }));
+addEventListener('blur',()=>{ PMAP.clear(); if(game) game.held.clear(); });
 const GKEYS={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',Enter:'enter',' ':'enter',Escape:'clear',Backspace:'clear'};
 document.addEventListener('keydown',e=>{ if(!game) return;
   if((e.key==='f'||e.key==='F')&&!e.ctrlKey&&!e.metaKey){ e.preventDefault(); e.stopImmediatePropagation(); if(!e.repeat) gameFs(!game.fs); return; }
