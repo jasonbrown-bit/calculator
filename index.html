@@ -217,9 +217,10 @@ html.fit .cbox[open],html.fs .cbox[open]{position:fixed;left:50%;top:8px;transfo
 .gamecv{position:absolute;inset:0;width:100%;height:100%;z-index:5;background:#fff;touch-action:none}
 .gwrap{flex:1 1 0;min-height:0;position:relative}
 #cv84{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gwrap.zb #cv84{touch-action:none;cursor:crosshair}
 .ov84{position:absolute;inset:0;pointer-events:none;font:600 11.5px/1.3 var(--f-mono);color:#141414}
 .ov84 .top{position:absolute;left:3px;top:2px;right:3px;background:rgba(255,255,255,.88);padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ov84 .prompt{position:absolute;left:3px;bottom:20px;background:rgba(255,255,255,.88);padding:0 3px}
+.ov84 .prompt{position:absolute;left:3px;right:3px;bottom:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:rgba(255,255,255,.88);padding:0 3px}
 .ov84 .bot{position:absolute;left:3px;right:3px;bottom:2px;display:flex;justify-content:space-between;gap:8px;background:rgba(255,255,255,.9);padding:0 3px;white-space:nowrap;overflow:hidden}
 .ov84 .bot.res{justify-content:flex-start}
 .hs{flex:1;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;padding:0 6px}
@@ -1319,6 +1320,7 @@ function dec84(v){
   return decText(v).replace('E','ᴇ');
 }
 function fmt84(val,pref){
+  if(val.x&&pref!=='dec') return xHtml(val);
   if(pref==='frac'||pref==='mixed'){ const f=asFrac(val); if(f&&f.d!==1) return pref==='mixed'?mixedHtml(f.n,f.d):fracHtml(f.n,f.d); if(f) return mn(f.n); }
   if(val.r&&val.d===1&&Math.abs(val.n)<1e10&&S.float<0) return mn(val.n);
   return dec84(num(val));
@@ -1416,7 +1418,7 @@ const MENUS={
   frac:()=>[mk('FRAC',[['n/d','frac'],['Un/d','mixed'],['▸F◂▸D','▸F◂▸D'],['▸n/d◂▸Un/d','▸n/d◂▸Un/d']])],
   func:()=>[mk('FUNC',[['abs(','abs'],['summation Σ(','Σ('],['nDeriv(','nDeriv('],['fnInt(','fnInt('],['logBASE(','logBASE('],['ˣ√','nroot'],['nPr','nPr'],['nCr','nCr'],['!','!']])],
   yvars:()=>[mk('Y-VARS',S.Y.func.map((f,i)=>['Y'+ynum(i),'y:Y'+ynum(i)]))],
-  zoom:()=>[mk('ZOOM',[['ZBox',null,1],['Zoom In',()=>zoomBy(1/4)],['Zoom Out',()=>zoomBy(4)],['ZDecimal',()=>setWin(-6.6,6.6,1,-4.1,4.1,1)],['ZSquare',zSquare],
+  zoom:()=>[mk('ZOOM',[['ZBox',startZBox],['Zoom In',()=>zoomBy(1/4)],['Zoom Out',()=>zoomBy(4)],['ZDecimal',()=>setWin(-6.6,6.6,1,-4.1,4.1,1)],['ZSquare',zSquare],
     ['ZStandard',zStandard],['ZTrig',()=>{ const k=S.angle==='DEG'?180/Math.PI:1; setWin(-10*Math.PI/3*k,10*Math.PI/3*k,Math.PI/2*k,-4,4,1); }],['ZInteger',()=>{ const cx=Math.round((S.W.Xmin+S.W.Xmax)/2),cy=Math.round((S.W.Ymin+S.W.Ymax)/2); setWin(cx-132,cx+132,10,cy-82,cy+82,10); }],
     ['ZoomStat',null,1],['ZoomFit',zoomFit]])],
   calc:()=>S.gmode==='func'?[mk('CALCULATE',[['value',()=>startCalc('value')],['zero',()=>startCalc('zero')],['minimum',()=>startCalc('min')],['maximum',()=>startCalc('max')],
@@ -1577,7 +1579,10 @@ function drawGraph84(){
       else { ctx.strokeRect(px-4.5,py-4.5,9,9); ctx.beginPath(); ctx.moveTo(px-8,py); ctx.lineTo(px+8,py); ctx.moveTo(px,py-8); ctx.lineTo(px,py+8); ctx.stroke(); }
     }
     if(g.kind==='trace'&&pt) html+=`<div class="top" style="color:${pt.color}">${pt.label}</div>`;
-    const prompt=g.calc?CALC_PROMPT[g.calc.step]||'':'';
+    if(g.zbox&&g.zbox.c1){ const [x1,y1]=g.zbox.c1, ax=gx(x1,w), ay=gy(y1,h), bx=gx(g.x,w), by=gy(g.y,h);
+      ctx.setLineDash([4,3]); ctx.strokeStyle='#1d1d1d'; ctx.lineWidth=1.3; ctx.strokeRect(Math.min(ax,bx),Math.min(ay,by),Math.abs(bx-ax),Math.abs(by-ay)); ctx.setLineDash([]);
+      ctx.fillStyle='#1d1d1d'; ctx.fillRect(ax-2.5,ay-2.5,5,5); }
+    const prompt=g.zbox?(g.zbox.c1?'ZBox: move to the opposite corner, then enter':'ZBox: move to a corner, then enter (or drag a box)'):g.calc?CALC_PROMPT[g.calc.step]||'':'';
     let bottom='';
     if(g.entry) bottom=`<div class="bot"><span>${g.entryLabel||indepVar()}=${renderRow(g.entry.root,g.entry.cur,true)}</span></div>`;
     else if(g.result) bottom=`<div class="bot res"><span>${g.result}</span></div>`;
@@ -1605,6 +1610,18 @@ function cursorPoint(){
 }
 const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]);
 function showGraph(){ S.view='graph'; if(S.gc&&S.gc.kind==='trace'){ S.gc.calc=null; S.gc.result=null; S.gc.entry=null; } }
+function startZBox(){ S.view='graph'; S.gc={kind:'free',x:(S.W.Xmin+S.W.Xmax)/2,y:(S.W.Ymin+S.W.Ymax)/2,zbox:{c1:null}}; }
+function zboxCorner(x,y){
+  const g=S.gc; if(!g||!g.zbox) return;
+  if(!g.zbox.c1){ g.zbox.c1=[x,y]; return; }
+  const [x1,y1]=g.zbox.c1; if(Math.abs(x-x1)<dX()*2||Math.abs(y-y1)<dY()*2){ g.msg='The box is too small. Move farther from the first corner.'; return; }
+  const W0=S.W; S.gc=null; setWin(Math.min(x,x1),Math.max(x,x1),W0.Xscl,Math.min(y,y1),Math.max(y,y1),W0.Yscl);
+}
+function graphXY(ev){ const r=cv.getBoundingClientRect(); const fx=Math.max(0,Math.min(1,(ev.clientX-r.left)/r.width)), fy=Math.max(0,Math.min(1,(ev.clientY-r.top)/r.height));
+  return [S.W.Xmin+fx*(S.W.Xmax-S.W.Xmin), S.W.Ymax-fy*(S.W.Ymax-S.W.Ymin)]; }
+cv.addEventListener('pointerdown',ev=>{ const g=S.gc; if(!g||!g.zbox||S.view!=='graph') return; ev.preventDefault(); const [x,y]=graphXY(ev); g.x=x; g.y=y; g.zbox.c1=[x,y]; g.zbox.drag=true; g.msg=null; try{ cv.setPointerCapture(ev.pointerId); }catch(e){} render84(); });
+cv.addEventListener('pointermove',ev=>{ const g=S.gc; if(!g||!g.zbox||!g.zbox.drag) return; const [x,y]=graphXY(ev); g.x=x; g.y=y; render84(); });
+cv.addEventListener('pointerup',ev=>{ const g=S.gc; if(!g||!g.zbox||!g.zbox.drag) return; g.zbox.drag=false; const [x,y]=graphXY(ev); g.x=x; g.y=y; zboxCorner(x,y); if(S.gc&&S.gc.zbox&&S.gc.msg){ S.gc.zbox.c1=null; } save84(); render84(); });
 function startTrace(){
   const act=activeIdx(); S.view='graph';
   if(!act.length){ S.gc={kind:'free',x:(S.W.Xmin+S.W.Xmax)/2,y:(S.W.Ymin+S.W.Ymax)/2}; return; }
@@ -1784,12 +1801,12 @@ function evalHome(){
   if(edEmpty(ed)){ if(!S.lastEntry) return; ed=H.ed={root:clone(S.lastEntry),cur:null}; ed.cur={row:ed.root,i:ed.root.items.length}; }
   const work=clone(ed.root); let conv=null;
   while(work.items.length){ const l=work.items[work.items.length-1]; if(l.t==='k'&&l.v.startsWith('▸')){ conv=conv||l.v; work.items.pop(); } else break; }
-  const {toks,frac}=tokenize(work);
+  const {toks,frac,dec}=tokenize(work);
   let store=null, body=toks; const si=toks.findIndex(t=>t.k==='sto');
   if(si>=0){ const rest=toks.slice(si+1); if(rest.length!==1||rest[0].k!=='var') throw new CErr('SYNTAX','After sto→, press alpha and a letter (or X,T,θ,n), then enter.'); store=rest[0].v; body=toks.slice(0,si); }
   const v=withAngle(()=>evaluateTokens(body,envBase()));
   if(store) S.vars[store]=v;
-  let pref=S.answers==='dec'?'dec':(frac&&isExact(v)&&v.r?'frac':'dec');
+  let pref=S.answers==='dec'?'dec':(v.x&&!dec)?'frac':(frac&&isExact(v)&&v.r?'frac':'dec');
   if(conv==='▸Frac') pref='frac'; else if(conv==='▸Dec') pref='dec'; else if(conv==='▸F◂▸D') pref=pref==='frac'?'dec':'frac'; else if(conv==='▸n/d◂▸Un/d') pref='mixed';
   H.hist.push({e:clone(ed.root),val:v,pref}); if(H.hist.length>40) H.hist.shift();
   S.ans=v; S.lastEntry=clone(ed.root); H.ed=newEd(); gCache.key=null;
@@ -1857,12 +1874,14 @@ function graphKey84(act){
     if(act==='left'||act==='right'){ edMove(g.entry,act==='left'?-1:1); return; }
     insertAct(g.entry,act,false); return;
   }
-  if(act==='clear'){ if(g&&(g.calc||g.result)){ g.calc=null; g.result=null; return; } S.view='home'; S.gc=null; return; }
+  if(act==='clear'){ if(g&&g.zbox){ S.gc=null; return; } if(g&&(g.calc||g.result)){ g.calc=null; g.result=null; return; } S.view='home'; S.gc=null; return; }
   if(g&&g.result&&['left','right','up','down'].includes(act)){ g.result=null; if(g.calc&&g.calc.shade) g.calc=null; }
   g=S.gc; if(g) g.msg=null;
   if(!g){ if(['left','right','up','down'].includes(act)) S.gc=g={kind:'free',x:(S.W.Xmin+S.W.Xmax)/2,y:(S.W.Ymin+S.W.Ymax)/2}; else return; }
   if(g.kind==='free'){
-    if(act==='left') g.x-=dX(); else if(act==='right') g.x+=dX(); else if(act==='up') g.y+=dY(); else if(act==='down') g.y-=dY();
+    if(['left','right','up','down'].includes(act)){ const now=performance.now(); g.mult=(g.lastDir===act&&now-g.lastT<260)?Math.min(10,(g.mult||1)+1):1; g.lastDir=act; g.lastT=now;
+      const m=g.mult; if(act==='left') g.x-=dX()*m; else if(act==='right') g.x+=dX()*m; else if(act==='up') g.y+=dY()*m; else g.y-=dY()*m; }
+    else if(act==='enter'&&g.zbox) zboxCorner(g.x,g.y);
     g.x=Math.max(S.W.Xmin,Math.min(S.W.Xmax,g.x)); g.y=Math.max(S.W.Ymin,Math.min(S.W.Ymax,g.y)); return;
   }
   const act2=activeIdx(), n=act2.length;
@@ -2004,7 +2023,7 @@ function render84(){
   g84.classList.toggle('second',S.second); g84.classList.toggle('alpha',S.alpha);
   let isG=S.view==='graph'&&!S.menu&&!S.err&&!S.info;
   if(isG){ try{ validateGraph(); }catch(e){ if(e instanceof CErr){ showErr(e); S.err.ret='home'; isG=false; } else throw e; } }
-  gwrap.hidden=!isG; v84.hidden=isG;
+  gwrap.hidden=!isG; v84.hidden=isG; gwrap.classList.toggle('zb',!!(S.gc&&S.gc.zbox));
   if(isG){ drawGraph84(); return; }
   let h='';
   if(S.err) h=`<div class="err84"><div class="et">ERROR: ${ERR84[S.err.code]||S.err.code}</div><div class="eo${S.err.idx===0?' on':''}"><span class="n">1:</span>Quit</div><div class="eo${S.err.idx===1?' on':''}"><span class="n">2:</span>Goto</div><div class="eh">${S.err.hint}</div></div>`;
