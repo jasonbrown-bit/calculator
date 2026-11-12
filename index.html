@@ -2309,7 +2309,15 @@ const SP={
   Shellop:{t:'Tide',b:[55,50,65,35],r:.5,learn:[[1,'Bump'],[1,'Squirt'],[8,'Brace'],[13,'Riptide']],look:{body:'shell',c1:'#e08ab0',c2:'#7cc0e8'}},
   Cinderbat:{t:'Ember',b:[48,58,42,66],r:.5,learn:[[1,'Swipe'],[1,'Cinder'],[8,'Breeze Cut'],[13,'Blaze Dash']],look:{body:'bat',c1:'#a83a3a',c2:'#ffb070'}},
   Quarrox:{t:'Stone',b:[68,70,75,30],r:.35,learn:[[1,'Swipe'],[1,'Pebble Shot'],[10,'Brace'],[14,'Rockfall']],look:{body:'beast',c1:'#7d6e5c',c2:'#b3a48f'}},
-  Stormane:{t:'Volt',b:[60,70,55,72],r:.25,learn:[[1,'Swipe'],[1,'Jolt'],[10,'Focus'],[13,'Static Burst'],[16,'Cyclone']],look:{body:'horse',c1:'#5a6fd6',c2:'#ffe14a'}}
+  Stormane:{t:'Volt',b:[60,70,55,72],r:.25,learn:[[1,'Swipe'],[1,'Jolt'],[10,'Focus'],[13,'Static Burst'],[16,'Cyclone']],look:{body:'horse',c1:'#5a6fd6',c2:'#ffe14a'}},
+  Crabbit:{t:'Tide',b:[55,62,70,40],r:.45,learn:[[1,'Bump'],[1,'Squirt'],[8,'Brace'],[14,'Riptide']],look:{body:'crab',c1:'#e8603c',c2:'#ffd2b8'}},
+  Featherkite:{t:'Gale',b:[50,58,45,70],r:.45,learn:[[1,'Bump'],[1,'Breeze Cut'],[8,'Focus'],[14,'Cyclone']],look:{body:'bird',c1:'#f2a8c8',c2:'#fff4f8'}},
+  Glowmoth:{t:'Volt',b:[48,55,45,68],r:.45,learn:[[1,'Bump'],[1,'Jolt'],[8,'Mend'],[14,'Static Burst']],look:{body:'moth',c1:'#b8a0ff',c2:'#ffe14a'}},
+  Mudlurk:{t:'Stone',b:[65,60,62,35],r:.45,learn:[[1,'Bump'],[1,'Pebble Shot'],[8,'Brace'],[14,'Rockfall']],look:{body:'frog',c1:'#7d6a4f',c2:'#c9b48a'}},
+  Lavaslug:{t:'Ember',b:[60,66,55,30],r:.4,learn:[[1,'Bump'],[1,'Cinder'],[8,'Brace'],[14,'Blaze Dash']],look:{body:'slug',c1:'#d9481c',c2:'#ffb02e'}},
+  Reedling:{t:'Leaf',b:[52,58,50,55],r:.45,learn:[[1,'Bump'],[1,'Leaf Toss'],[8,'Mend'],[14,'Bramble Lash']],look:{body:'sprite',c1:'#9ccc65',c2:'#f6f0c8'}},
+  Pufflet:{t:'Gale',b:[58,48,58,50],r:.45,learn:[[1,'Bump'],[1,'Breeze Cut'],[8,'Mend'],[14,'Cyclone']],look:{body:'cloud',c1:'#e8eef8',c2:'#9fc3e8'}},
+  Slabback:{t:'Stone',b:[70,64,80,25],r:.4,learn:[[1,'Bump'],[1,'Pebble Shot'],[8,'Brace'],[14,'Rockfall']],look:{body:'turtle',c1:'#6d8a5a',c2:'#8a7a66'}}
 };
 const STARTERS=['Cindral','Driplet','Mossling'];
 const CHAINS=[
@@ -2323,7 +2331,15 @@ const CHAINS=[
   ['Shellop',[24,'Shellodrome',{c1:'#d06a9c',size:1.2,ex:['crown','gem']}]],
   ['Cinderbat',[24,'Pyrewing',{c1:'#922c2c',size:1.18,ex:['flames','crown']}]],
   ['Quarrox',[30,'Quarrogon',{c1:'#6d604f',size:1.2,ex:['wings','crown']}]],
-  ['Stormane',[30,'Tempesteed',{c1:'#4a5ec8',size:1.2,ex:['wings','aura']}]]
+  ['Stormane',[30,'Tempesteed',{c1:'#4a5ec8',size:1.2,ex:['wings','aura']}]],
+  ['Crabbit',[34,'Clawdron',{c1:'#c8452a',size:1.2,ex:['horns','gem']}]],
+  ['Featherkite',[36,'Kitestorm',{c1:'#e080b0',size:1.2,ex:['wings','crown']}]],
+  ['Glowmoth',[34,'Lumimoth',{c1:'#9c80f0',size:1.12,ex:['gem']}],[44,'Auroramoth',{c1:'#7c60e0',c2:'#7dffc8',size:1.24,ex:['aura','crown','gem']}]],
+  ['Mudlurk',[38,'Bogrock',{c1:'#6a583f',size:1.2,ex:['horns','mane']}]],
+  ['Lavaslug',[36,'Pyroslug',{c1:'#c23a12',size:1.2,ex:['flames','crown']}]],
+  ['Reedling',[36,'Marshkeeper',{c1:'#7cb84a',size:1.14,ex:['mane','gem']}],[46,'Verdantide',{c1:'#5aa03a',c2:'#ffe6f0',size:1.26,ex:['aura','crown','wings']}]],
+  ['Pufflet',[38,'Nimbusk',{c1:'#c8d4e8',c2:'#5f8fd0',size:1.2,ex:['wings','gem']}]],
+  ['Slabback',[40,'Bulwarrock',{c1:'#557548',size:1.22,ex:['horns','crown']}]]
 ];
 const BIGMV={Ember:'Inferno',Tide:'Tsunami',Leaf:'Wildgrowth',Volt:'Thunderclap',Stone:'Quake Slam',Gale:'Skystorm'};
 for(const [base,...stages] of CHAINS){ const B0=SP[base]; const learn=B0.learn.concat([[20,'Crash'],[26,BIGMV[B0.t]]]); B0.learn=learn; let prev=base;
@@ -2341,6 +2357,12 @@ const RAW={
   'TTT...,,....TT..,,......TT','T,,,......,,TT..,,..TT...T','T,,,,..TT.,,....,,..TT,,,T','T,,,,..TT...==......,,,,,T','TTTTTTTTTTTT==TTTTTTTTTTTT']},
  cave:{w:22,fill:'#',rows:['##########cc##########','#rrrcccc##cc##ccccrrr#','#rrrcccc##cc##ccccrrr#','#cccc##cccccccc##cccc#','#cc##rrrrcccc##ccc##c#','#cc##rrrrcccc##ccc##c#',
   'ccccccccccccccccccccc#','ccccc###ccccrrrr##ccc#','#cccc###ccccrrrr##ccc#','#rrrcccccc##ccccccccc#','#rrrcccccc##cccc##rrr#','#ccccc##cccccccc##rrr#','#ccccc##cccccccccccrr#','######################']},
+ coast:{w:24,fill:'~',rows:['~~~~~~~~~~~~~~~~~~~~~~~~','~~~~~~~~~~~~~~~~~~~~~~~~','~~~___~~~~~~~~~~___~~~~~','~______~~~~~~~______~~~~','~__,,,___P____,,,,___~~~','~__,,,______P__,,,,____~',
+  '~_____P___,,,,_______R_~','~____,,,__,,,,__P_______','~____,,,_______,,,______','~__P_____S____,,,,___P_~','~__,,,,_____P_,,,,_____~','~__,,,,____________,,,_~','~____P_____==_____P,,,_~','~__________==__________~','~__________==__________~','###########==###########']},
+ marsh:{w:24,fill:'T',rows:['TTTTTTTTTTT==TTTTTTTTTTT','T,,,,..~~~.==.~~~..,,,,T','T,,,,..~~~.==.~~~..,,,,T','T..TT......==......TT..T','T..TT.,,,,.==.,,,,.TT..T','T.....,,,,.==.,,,,.....T','T,,,..........R....,,,,T',
+  '..,,,..~~~~......~~~...T','..,,,..~~~~..S...~~~...T','T......~~~~......~~~,,,T','T,,,,.........,,,,...,,T','T,,,,..TT.....,,,,..TT.T','T......TT...........TT.T','T,,,..........,,,,.....T','T,,,......TT..,,,,..,,,T','TTTTTTTTTTTTTTTTTTTTTTTT']},
+ ruins:{w:20,fill:'#',rows:['####################','#cccccc######cccccc#','#crrrcc#cccc#ccrrrc#','#crrrcc#cccc#ccrrrc#','#cccccccccccccccccc#','#cc##cccrrrrccc##cc#','#cc##cccrrrrccc##cc#','#Rccccccccccccccccc#',
+  '#crrc##cccccc##crrc#','#crrc##cccccc##crrc#','#cccccccccccccccccc#','#rrrcccccccccccccrr#','#rrrcccccccccccccrr#','#########cc#########']},
  summit:{w:16,fill:'#',rows:['################','#..............#','#..f........f..#','#..............#','#.....====.....#','#.....====.....#','#..............#','#..f........f..#',
   '#..............#','#......==......#','#......==......#','#######==#######']}
 };
@@ -2348,22 +2370,33 @@ const MAPS={};
 for(const k in RAW){ const r=RAW[k]; MAPS[k]=r.rows.map(row=>(row+r.fill.repeat(r.w)).slice(0,r.w).split('')); }
 const WARPS={village:[[10,0,'route',8,18],[11,0,'route',9,18]],route:[[8,19,'village',10,1],[9,19,'village',11,1],[8,0,'forest',12,14],[9,0,'forest',13,14]],
   forest:[[12,15,'route',8,1],[13,15,'route',9,1],[25,7,'cave',1,6],[25,8,'cave',1,7]],cave:[[0,6,'forest',24,7],[0,7,'forest',24,8],[10,0,'summit',7,10],[11,0,'summit',8,10]],
-  summit:[[7,11,'cave',10,1],[8,11,'cave',11,1]]};
-for(const m in WARPS) for(const [x,y] of WARPS[m]) MAPS[m][y][x]=m==='cave'?'c':m==='summit'?'=':'=';
-const NAMES={village:'Luma Village',route:'Route 1',forest:'Whisper Woods',cave:'Ember Cave',summit:'Summit Peak'};
+  summit:[[7,11,'cave',10,1],[8,11,'cave',11,1],[7,0,'coast',11,14],[8,0,'coast',12,14]],
+  coast:[[11,15,'summit',7,1],[12,15,'summit',8,1],[23,7,'marsh',1,7],[23,8,'marsh',1,8]],
+  marsh:[[0,7,'coast',22,7],[0,8,'coast',22,8],[11,0,'ruins',9,12],[12,0,'ruins',10,12]],
+  ruins:[[9,13,'marsh',11,1],[10,13,'marsh',12,1]]};
+for(const m in WARPS) for(const [x,y] of WARPS[m]){ if(m==='summit'&&y===0) continue; MAPS[m][y][x]=(m==='cave'||m==='ruins')?'c':m==='coast'?'=':m==='marsh'?'.':'='; }
+const isGate=(m,x,y)=>m==='summit'&&y===0&&(x===7||x===8);
+const NAMES={village:'Luma Village',route:'Route 1',forest:'Whisper Woods',cave:'Ember Cave',summit:'Summit Peak',coast:'Tidewater Coast',marsh:'Glimmer Marsh',ruins:'Starfall Ruins'};
 const ENC={route:[['Gustwing',2,5],['Buzzlet',2,5],['Pebblor',3,5]],forest:[['Thornback',6,9],['Buzzlet',6,9],['Cinderbat',7,10],['Shellop',6,9],['Gustwing',7,9]],
-  cave:[['Pebblor',10,13],['Quarrox',11,14],['Cinderbat',10,13],['Shellop',10,12],['Stormane',12,14]]};
-const SIGNS={village:['LUMA VILLAGE','Route 1 is to the north. Summit Peak lies beyond the woods and the cave.'],route:['ROUTE 1','North: Whisper Woods.']};
+  cave:[['Pebblor',10,13],['Quarrox',11,14],['Cinderbat',10,13],['Shellop',10,12],['Stormane',12,14]],
+  coast:[['Crabbit',26,30],['Featherkite',26,30],['Pufflet',27,30],['Shellop',27,30]],
+  marsh:[['Mudlurk',30,34],['Reedling',30,34],['Glowmoth',30,34],['Thornback',31,34]],
+  ruins:[['Lavaslug',34,38],['Slabback',34,38],['Glowmoth',35,38],['Quarrox',34,37],['Stormane',35,38]]};
+const SIGNS={village:['LUMA VILLAGE','Route 1 is to the north. Summit Peak lies beyond the woods and the cave.'],route:['ROUTE 1','North: Whisper Woods.'],coast:['TIDEWATER COAST','East: Glimmer Marsh. Rest at the glowing stone by the shore.'],marsh:['GLIMMER MARSH','North: the Starfall Ruins. Only Champions may enter.']};
 const NPCS=[
   {id:'juno',m:'village',x:7,y:8,d:'down',name:'Elder Juno',shirt:'#7a5aa8',hair:'#dcdcdc',talk:['Wild Wildlings hide in tall grass.','If your team gets tired, walk into the door of the red-roofed house on the left. The healer will help.']},
   {id:'kid',m:'village',x:15,y:11,d:'left',name:'Milo',shirt:'#e0603c',hair:'#4a3020',talk:['Ember beats Leaf. Leaf beats Tide. Tide beats Ember!','Volt zaps Tide and Gale. Stone blocks Volt and Ember. Gale blows away Leaf.']},
   {id:'ana',m:'route',x:8,y:12,d:'down',name:'Hiker Ana',shirt:'#c0504d',hair:'#6b4a2b',trainer:[['Pebblor',5],['Gustwing',6]],before:["Hold it! Let's see how tough your team is!"],after:['The woods ahead have stronger Wildlings. Good luck!']},
   {id:'tom',m:'forest',x:13,y:9,d:'left',name:'Ranger Tom',shirt:'#3f7d3a',hair:'#2b2b2b',trainer:[['Thornback',9],['Buzzlet',10]],before:['These woods are my patrol. Show me you can handle them!'],after:['Rest at the glowing stone if you need to. The cave is east.']},
   {id:'rae',m:'cave',x:12,y:9,d:'left',name:'Explorer Rae',shirt:'#d08a2a',hair:'#1d1d1d',trainer:[['Cinderbat',12],['Shellop',12],['Quarrox',13]],before:["Nobody reaches the Summit without getting past me!"],after:['Warden Kade waits at the top. Heal up first!']},
-  {id:'kade',m:'summit',x:7,y:3,d:'down',name:'Warden Kade',shirt:'#2d3e70',hair:'#b8b8b8',boss:true,trainer:[['Gustwing',15],['Stormane',17],['Quarrox',17]],before:['So, you climbed Summit Peak.','I am Warden Kade. Show me everything your team has learned!'],after:['You are the Champion of the Wildlands. Keep exploring and training!']}
+  {id:'kade',m:'summit',x:7,y:3,d:'down',name:'Warden Kade',shirt:'#2d3e70',hair:'#b8b8b8',boss:true,trainer:[['Gustwing',15],['Stormane',17],['Quarrox',17]],before:['So, you climbed Summit Peak.','I am Warden Kade. Show me everything your team has learned!'],after:['You are the Champion of the Wildlands. The Skyway north of the Summit is open. New Wildlings wait beyond it!']},
+  {id:'brin',m:'coast',x:14,y:11,d:'left',name:'Sailor Brin',shirt:'#2f7fe0',hair:'#e8c070',trainer:[['Crabbit',30],['Featherkite',31]],before:['Ahoy, Champion! The Wildlings out here are tougher than back home. Ready?'],after:['The marsh is east. Bring Leaf and Volt friends!']},
+  {id:'ode',m:'marsh',x:11,y:10,d:'up',name:'Botanist Ode',shirt:'#5aa03a',hair:'#7a4f2a',trainer:[['Reedling',33],['Mudlurk',33],['Glowmoth',34]],before:['Shh, the marsh glows at night. Let us battle quietly!'],after:['The Starfall Ruins are north. Starwarden Lyra guards them.']},
+  {id:'pell',m:'ruins',x:10,y:7,d:'down',name:'Scholar Pell',shirt:'#8a5ab0',hair:'#3a3a3a',trainer:[['Lavaslug',36],['Pufflet',36],['Slabback',37]],before:['These ruins hold old secrets. Prove you are worthy to see them!'],after:['Lyra waits in the inner chamber. Heal at the glowing stone first.']},
+  {id:'lyra',m:'ruins',x:9,y:2,d:'down',name:'Starwarden Lyra',shirt:'#3a2a70',hair:'#f2e8ff',boss2:true,trainer:[['Featherkite',42],['Crabbit',43],['Glowmoth',44],['Reedling',46]],before:['You have come far, Champion.','I am Starwarden Lyra. Let us see if your team shines as bright as the stars!'],after:['You are a true Grand Champion. The stars will always welcome you here.']}
 ];
 for(const n of NPCS){ const t=MAPS[n.m][n.y][n.x]; if('T#~HS'.includes(t)) MAPS[n.m][n.y][n.x]=n.m==='cave'?'c':'.'; }
-const SOLID=new Set(['T','~','H','D','S','#','R']);
+const SOLID=new Set(['T','~','H','D','S','#','R','P']);
 /* ----- creature helpers ----- */
 const stat=(m,k)=>{ const b=SP[m.s].b; return k==='hp'?Math.floor(b[0]*2*m.L/100)+m.L+10:Math.floor(b[{atk:1,def:2,spd:3}[k]]*2*m.L/100)+5; };
 function movesAt(s,L){ const out=[]; for(const [l,mv] of SP[s].learn) if(l<=L&&!out.includes(mv)){ out.push(mv); if(out.length>4) out.shift(); } return out; }
@@ -2433,6 +2466,38 @@ function drawMon(s,cx,cy,sc,flip){
       for(const lx of [-14,-4,8,14]) ell(lx,21,5,6,c1);
       ell(-2,8,22,14,c1); for(const sx of [-16,-8,0,8]) poly([sx-4,-2,sx,-14,sx+4,-2],c2);
       ell(18,-2,12,11,c1); poly([20,-12,30,-22,26,-9],'#e8e0d0'); eyes(20,-3,3.2,2.2); ell(27,3,2,1.5,'#141414',false); break;
+    case 'crab':
+      X.strokeStyle=OUT; X.lineWidth=1.6; for(const lx of [-14,-8,8,14]){ X.beginPath(); X.moveTo(lx,12); X.lineTo(lx+(lx<0?-6:6),24); X.stroke(); }
+      ell(0,10,20,12,c1); ell(0,14,12,6,c2,false);
+      ell(-24,-2,8,7,c1); poly([-30,-8,-24,-2,-32,0],'#ffffff',false); ell(24,-2,8,7,c1); poly([30,-8,24,-2,32,0],'#ffffff',false);
+      X.strokeStyle=OUT; X.beginPath(); X.moveTo(-5,0); X.lineTo(-6,-10); X.moveTo(5,0); X.lineTo(6,-10); X.stroke(); eyes(0,-11,6,2.6); break;
+    case 'moth':
+      ell(-14,-4,15,12,c1); ell(14,-4,15,12,c1); ell(-12,12,10,8,c1); ell(12,12,10,8,c1);
+      ell(-14,-4,5,4,c2,false); ell(14,-4,5,4,c2,false); ell(-12,12,3.5,3,c2,false); ell(12,12,3.5,3,c2,false);
+      ell(0,6,6,16,'#e8dcc8'); X.strokeStyle=OUT; X.lineWidth=1.4; X.beginPath(); X.moveTo(-2,-9); X.quadraticCurveTo(-8,-20,-12,-22); X.moveTo(2,-9); X.quadraticCurveTo(8,-20,12,-22); X.stroke();
+      eyes(0,-2,3,2); break;
+    case 'frog':
+      ell(-14,22,8,4,c1); ell(14,22,8,4,c1);
+      ell(0,10,22,14,c1); ell(0,15,14,7,c2,false); ell(-10,-4,7,7,c1); ell(10,-4,7,7,c1);
+      eyes(0,-5,10,3); X.strokeStyle=OUT; X.lineWidth=1.4; X.beginPath(); X.moveTo(-10,8); X.quadraticCurveTo(0,13,10,8); X.stroke(); break;
+    case 'slug':
+      X.fillStyle=c1; X.beginPath(); X.moveTo(-28,22); X.quadraticCurveTo(-24,6,-6,4); X.quadraticCurveTo(14,-2,18,10); X.quadraticCurveTo(22,22,14,24); X.closePath(); X.fill(); X.strokeStyle=OUT; X.lineWidth=1.4; X.stroke();
+      ell(-6,19,16,4,c2,false); for(const [sx,sy] of [[-16,12],[-6,9],[4,8]]) ell(sx,sy,2.5,2,c2,false);
+      X.beginPath(); X.moveTo(10,2); X.lineTo(8,-10); X.moveTo(16,4); X.lineTo(18,-8); X.stroke(); ell(8,-11,2.6,2.6,'#ffffff'); ell(18,-9,2.6,2.6,'#ffffff'); ell(8.5,-11,1.2,1.2,'#141414',false); ell(18.5,-9,1.2,1.2,'#141414',false); break;
+    case 'sprite':
+      ell(-6,24,4,3,'#6b8a3a'); ell(6,24,4,3,'#6b8a3a');
+      poly([-14,4,-26,-4,-20,8],c1); poly([14,4,26,-4,20,8],c1);
+      ell(0,10,11,15,c1); ell(0,14,6,8,c2,false); ell(0,-10,11,10,c2);
+      poly([-8,-16,-12,-32,-2,-18],c1); poly([-2,-18,2,-36,4,-18],c1); poly([4,-18,12,-30,8,-14],c1); eyes(0,-9,4.5,2.2); break;
+    case 'cloud':
+      for(const [dx,dy] of [[-10,0],[10,0]]) X.fillStyle=c2, X.fillRect(dx-1,18,2,6);
+      ell(-14,6,11,10,c1); ell(14,6,11,10,c1); ell(0,0,15,14,c1); ell(0,10,20,9,c1); eyes(0,3,5.5,2.5);
+      X.strokeStyle=OUT; X.lineWidth=1.3; X.beginPath(); X.arc(0,9,3,0.2,Math.PI-0.2); X.stroke(); ell(-10,9,2.5,1.6,'#f8b8c8',false); ell(10,9,2.5,1.6,'#f8b8c8',false); break;
+    case 'turtle':
+      for(const lx of [-14,12]) ell(lx,21,5,5,c1);
+      ell(20,6,8,7,c1); eyes(22,4,2.6,1.8);
+      ell(-2,6,20,15,c2); for(const [hx,hy] of [[-8,0],[4,0],[-2,10],[-12,10],[8,10]]) poly([hx-4,hy,hx,hy-4,hx+4,hy,hx,hy+4],'#a89a86');
+      break;
     case 'horse':
       for(const lx of [-14,-6,4,10]){ X.fillStyle=c1; X.fillRect(lx-2,10,5,15); X.strokeStyle=OUT; X.lineWidth=1.2; X.strokeRect(lx-2,10,5,15); }
       poly([-20,4,-32,-2,-26,6,-34,10,-22,10],c2);
@@ -2449,7 +2514,7 @@ function drawMon(s,cx,cy,sc,flip){
 }
 const ANCH={quad:{top:[16,-16],back:[-6,-2],chest:[-2,13]},drop:{top:[0,-28],back:[0,-6],chest:[2,16]},stump:{top:[4,-12],back:[0,-6],chest:[0,15]},bug:{top:[16,-9],back:[-6,-4],chest:[-4,10]},
   bird:{top:[4,-15],back:[-6,4],chest:[2,13]},rock:{top:[-2,-14],back:[-8,-4],chest:[2,13]},shell:{top:[-4,-10],back:[-4,0],chest:[-4,8]},bat:{top:[0,-10],back:[0,0],chest:[0,9]},
-  beast:{top:[18,-13],back:[-6,-4],chest:[0,12]},horse:{top:[19,-22],back:[-4,-2],chest:[-2,8]},blob:{top:[0,-12],back:[0,-4],chest:[0,12]},bulb:{top:[0,-10],back:[0,0],chest:[0,12]}};
+  beast:{top:[18,-13],back:[-6,-4],chest:[0,12]},horse:{top:[19,-22],back:[-4,-2],chest:[-2,8]},crab:{top:[0,-16],back:[0,2],chest:[0,13]},moth:{top:[0,-10],back:[0,4],chest:[0,10]},frog:{top:[0,-12],back:[-6,2],chest:[0,15]},slug:{top:[14,-12],back:[-10,6],chest:[0,16]},sprite:{top:[0,-22],back:[0,4],chest:[0,12]},cloud:{top:[0,-14],back:[0,0],chest:[0,12]},turtle:{top:[-2,-8],back:[-2,0],chest:[-2,8]},blob:{top:[0,-12],back:[0,-4],chest:[0,12]},bulb:{top:[0,-10],back:[0,0],chest:[0,12]}};
 function tile(c,px,py,t,mx,my){
   const S=16, g=(a)=>{ X.fillStyle=a; X.fillRect(px,py,S,S); };
   const grass=()=>{ g('#8fd16a'); if((mx*7+my*13)%5===0){ X.fillStyle='#76bb55'; X.fillRect(px+4,py+9,2,2); X.fillRect(px+11,py+4,2,2); } };
@@ -2466,9 +2531,12 @@ function tile(c,px,py,t,mx,my){
       else { X.fillStyle='#7fb7e0'; X.fillRect(px+4,py+5,8,6); X.strokeStyle='#8a7a66'; X.strokeRect(px+4.5,py+5.5,7,5); } break; }
     case 'S': grass(); X.fillStyle='#7a4f2a'; X.fillRect(px+7,py+9,2,7); X.fillStyle='#b98b55'; X.fillRect(px+2,py+3,12,7); X.fillStyle='#7a4f2a'; X.fillRect(px+4,py+5,8,1); X.fillRect(px+4,py+7,6,1); break;
     case 'R': grass(); X.fillStyle='#9aa0a8'; X.beginPath(); X.ellipse(px+8,py+10,7,5,0,0,7); X.fill(); X.fillStyle=`rgba(80,180,255,${.6+.4*Math.sin(t*3)})`; X.beginPath(); X.arc(px+8,py+8,2.5,0,7); X.fill(); break;
-    case 'c': g('#a89a86'); if((mx*3+my*7)%5===0){ X.fillStyle='#95877a'; X.fillRect(px+3,py+11,3,2); } break;
-    case 'r': g('#a89a86'); X.fillStyle='#7d7064'; X.beginPath(); X.arc(px+5,py+6,2.5,0,7); X.arc(px+11,py+11,3,0,7); X.arc(px+12,py+4,1.8,0,7); X.fill(); break;
-    case '#': g('#5d544a'); X.fillStyle='#6f655a'; X.fillRect(px+1,py+1,6,5); X.fillRect(px+9,py+8,6,6); break;
+    case 'c': g(cur.map==='ruins'?'#8f86a8':'#a89a86'); if((mx*3+my*7)%5===0){ X.fillStyle='#95877a'; X.fillRect(px+3,py+11,3,2); } break;
+    case 'r': g(cur.map==='ruins'?'#8f86a8':'#a89a86'); X.fillStyle=cur.map==='ruins'?'#6a6086':'#7d7064'; X.beginPath(); X.arc(px+5,py+6,2.5,0,7); X.arc(px+11,py+11,3,0,7); X.arc(px+12,py+4,1.8,0,7); X.fill(); break;
+    case '_': g('#ecd9a6'); if((mx*5+my*7)%4===0){ X.fillStyle='#d9c48c'; X.fillRect(px+4,py+10,2,1.5); X.fillRect(px+11,py+5,2,1.5); } break;
+    case 'P': g('#ecd9a6'); X.fillStyle='#8b5a2b'; X.fillRect(px+7,py+6,2.5,10); X.fillStyle='#2fa84f'; for(const a of [-2.4,-1.6,-0.8,0]){ X.beginPath(); X.ellipse(px+8+Math.cos(a)*4,py+5+Math.sin(a)*2,5,1.8,a,0,7); X.fill(); X.beginPath(); X.ellipse(px+8-Math.cos(a)*4,py+5+Math.sin(a)*2,5,1.8,-a,0,7); X.fill(); } break;
+    case 'G': g('#5d544a'); X.fillStyle='#8a7d6e'; X.fillRect(px+1,py+2,14,13); X.fillStyle='#4a4038'; X.fillRect(px+7,py+2,2,13); X.fillStyle='#f2c230'; X.beginPath(); X.arc(px+8,py+9,1.8,0,7); X.fill(); break;
+    case '#': g(cur.map==='ruins'?'#4a3f62':'#5d544a'); X.fillStyle='#6f655a'; X.fillRect(px+1,py+1,6,5); X.fillRect(px+9,py+8,6,6); break;
   }
 }
 function person(px,py,d,shirt,hair,hat){
@@ -2502,6 +2570,7 @@ function heal(){ cur.team.forEach(m=>{ m.hp=stat(m,'hp'); m.dhp=m.hp; }); cur.ch
 function tryStep(d){
   cur.d=d; const [dx,dy]=DIRS[d], nx=cur.x+dx, ny=cur.y+dy, t=at(cur.map,nx,ny);
   if(t===undefined) return;
+  if(isGate(cur.map,nx,ny)){ if(!cur.champ){ say(['A heavy stone gate blocks the Skyway. A sign reads: "Open only to the Champion of the Wildlands."']); return; } W.mv={fx:cur.x,fy:cur.y,t:0}; cur.x=nx; cur.y=ny; return; }
   const n=npcAt(cur.map,nx,ny); if(n){ interact(n); return; }
   if(t==='D'||t==='R'){ heal(); say([t==='D'?'Healer: Welcome! Let me take care of your team.':'You touch the glowing stone. A warm light surrounds your team.','Your team is fully healed! Charms and Tonics are restocked.']); return; }
   if(SOLID.has(t)) return;
@@ -2512,13 +2581,14 @@ function arrive(){
   if(w){ cur.map=w[2]; cur.x=w[3]; cur.y=w[4]; W.banner={t:NAMES[cur.map],until:W.t+1.6}; save(); return; }
   const t=at(cur.map,cur.x,cur.y);
   if((t===','||t==='r')&&ENC[cur.map]&&Math.random()<0.12){ const tab=ENC[cur.map]; let e=tab[Math.floor(Math.random()*tab.length)]; if(e[0]==='Stormane'&&Math.random()<.6) e=tab[0];
-    const L=e[1]+Math.floor(Math.random()*(e[2]-e[1]+1))+(cur.champ?14:0); if(cur.team.some(m=>m.hp>0)) startBattle([mkMon(e[0],L)],null); }
+    const L=e[1]+Math.floor(Math.random()*(e[2]-e[1]+1))+(cur.champ&&['route','forest','cave'].includes(cur.map)?14:0); if(cur.team.some(m=>m.hp>0)) startBattle([mkMon(e[0],L)],null); }
   save();
 }
 function interact(n){
   const f={up:'down',down:'up',left:'right',right:'left'}[cur.d]; n.dd=f;
-  if(n.trainer&&(!cur.beaten[n.id]||(n.boss&&cur.champ))&&!cur.team.some(m=>m.hp>0)){ say([`${n.name}: Your team is worn out. Go heal first!`]); return; }
+  if(n.trainer&&(!cur.beaten[n.id]||(n.boss&&cur.champ)||(n.boss2&&cur.champ2))&&!cur.team.some(m=>m.hp>0)){ say([`${n.name}: Your team is worn out. Go heal first!`]); return; }
   if(n.trainer&&!cur.beaten[n.id]){ say(n.before.map(l=>`${n.name}: ${l}`),()=>startBattle(n.trainer.map(([s,L])=>mkMon(s,L)),n)); return; }
+  if(n.boss2&&cur.champ2){ say([`${n.name}: The stars brought you back! Shall we battle again?`],()=>startBattle(n.trainer.map(([s,L])=>mkMon(s,L+8)),Object.assign({},n,{rematch:true}))); return; }
   if(n.boss&&cur.champ){ say([`${n.name}: Back for a rematch, Champion? My team has trained hard too!`],()=>startBattle(n.trainer.map(([s,L])=>mkMon(s,L+16)),Object.assign({},n,{rematch:true}))); return; }
   const lines=n.trainer?n.after:n.talk; say(lines.map(l=>`${n.name}: ${l}`));
 }
@@ -2575,7 +2645,7 @@ function turn(act){
 function gainXP(){
   const f=foe(), base=SP[f.s].b.reduce((a,b)=>a+b,0)/4, g=Math.floor(base*f.L/5*(B.tr?1.5:1));
   cur.team.forEach((m,i)=>{ if(m.hp<=0) return; const amt=i===B.ai?g:Math.floor(g/2); m.xp+=amt; if(i===B.ai) bsay(`${m.s} gained ${amt} XP.`);
-    while(m.L<50&&m.xp>=xpNeed(m.L)){ m.xp-=xpNeed(m.L); const oh=stat(m,'hp'); m.L++; m.hp+=stat(m,'hp')-oh; const h=m.hp, L=m.L; bsay(`${m.s} grew to level ${L}!`,()=>{m.dhp=h});
+    while(m.L<60&&m.xp>=xpNeed(m.L)){ m.xp-=xpNeed(m.L); const oh=stat(m,'hp'); m.L++; m.hp+=stat(m,'hp')-oh; const h=m.hp, L=m.L; bsay(`${m.s} grew to level ${L}!`,()=>{m.dhp=h});
       for(const [l,mv] of SP[m.s].learn) if(l===m.L&&!m.mv.includes(mv)){ let forgot=''; if(m.mv.length>=4) forgot=m.mv.shift(); m.mv.push(mv); bsay(`${m.s} learned ${mv}!`+(forgot?` (It forgot ${forgot}.)`:'')); }
       const ev=SP[m.s].evo; if(ev&&m.L>=ev[0]){ const from=m.s, to=ev[1], oh=stat(m,'hp'); if(!m.ds) m.ds=from; m.s=to; m.hp=Math.min(stat(m,'hp'),m.hp+stat(m,'hp')-oh); const h2=m.hp;
         bsay(`What? ${from} is evolving!`,()=>{ W.evoFlash=W.t; }); bsay(`${from} evolved into ${to}!`,()=>{ m.ds=null; m.dhp=h2; W.evoFlash=W.t; }); } } });
@@ -2591,8 +2661,10 @@ function endTurn(){
 function endBattle(r){
   const tr=B.tr; W.mode='world'; B=null; resetFx();
   if(r==='lose'){ heal(); cur.map='village'; cur.x=5; cur.y=5; cur.d='up'; save(); say(['The healer nursed your team back to health. Try again!']); return; }
-  if(r==='win'&&tr){ cur.beaten[tr.id]=true; if(tr.boss&&tr.rematch){ save(); say([`${tr.name}: What a battle! Come back any time for another rematch.`]); return; }
-    if(tr.boss){ cur.champ=true; save(); say([`${tr.name}: Incredible... you win!`,`${tr.name}: You are the new Champion of the Wildlands!`,'★ Congratulations! You beat Wildling Quest. ★','Wild Wildlings are now stronger, and Warden Kade will accept rematches. Keep training so your team can evolve!']); return; }
+  if(r==='win'&&tr){ cur.beaten[tr.id]=true;
+    if(tr.boss2){ if(!tr.rematch) cur.champ2=true; save(); say(tr.rematch?[`${tr.name}: Brilliant! Come back whenever the stars call you.`]:[`${tr.name}: Your team shines brighter than any star...`,`${tr.name}: I name you Grand Champion of the Wildlands!`,'★★ Congratulations! You finished Chapter 2 of Wildling Quest. ★★','Lyra will accept rematches. Keep training so every Wildling can reach its final form!']); return; }
+    if(tr.boss&&tr.rematch){ save(); say([`${tr.name}: What a battle! Come back any time for another rematch.`]); return; }
+    if(tr.boss){ cur.champ=true; save(); say([`${tr.name}: Incredible... you win!`,`${tr.name}: You are the new Champion of the Wildlands!`,'★ Congratulations! You beat Wildling Quest. ★','Wild Wildlings are now stronger, and Warden Kade will accept rematches.','A gate has opened north of Summit Peak: the Skyway to the Tidewater Coast. Chapter 2 begins!']); return; }
     save(); say(tr.after.map(l=>`${tr.name}: ${l}`)); return; }
   save();
 }
@@ -2751,9 +2823,9 @@ function draw(G){
   let pxw=cur.x, pyw=cur.y; if(W.mv){ const k=Math.min(1,W.mv.t); pxw=W.mv.fx+(cur.x-W.mv.fx)*k; pyw=W.mv.fy+(cur.y-W.mv.fy)*k; }
   const vw=w/S, vh=h/S; let camx=pxw+.5-vw/2, camy=pyw+.5-vh/2;
   camx=MW<=vw?(MW-vw)/2:Math.max(0,Math.min(MW-vw,camx)); camy=MH<=vh?(MH-vh)/2:Math.max(0,Math.min(MH-vh,camy));
-  X.fillStyle=cur.map==='cave'||cur.map==='summit'?'#3a332c':'#2e6b2e'; X.fillRect(0,0,w,h);
+  X.fillStyle={cave:'#3a332c',summit:'#3a332c',ruins:'#2a2438',coast:'#3f86c8'}[cur.map]||'#2e6b2e'; X.fillRect(0,0,w,h);
   const ox=-camx*S, oy=-camy*S;
-  for(let y=Math.max(0,Math.floor(camy));y<Math.min(MH,Math.ceil(camy+vh)+1);y++) for(let x=Math.max(0,Math.floor(camx));x<Math.min(MW,Math.ceil(camx+vw)+1);x++) tile(map[y][x],Math.round(ox+x*S),Math.round(oy+y*S),W.t,x,y);
+  for(let y=Math.max(0,Math.floor(camy));y<Math.min(MH,Math.ceil(camy+vh)+1);y++) for(let x=Math.max(0,Math.floor(camx));x<Math.min(MW,Math.ceil(camx+vw)+1);x++) tile(isGate(cur.map,x,y)?(cur.champ?'=':'G'):map[y][x],Math.round(ox+x*S),Math.round(oy+y*S),W.t,x,y);
   for(const n of NPCS) if(n.m===cur.map){ person(Math.round(ox+n.x*S),Math.round(oy+n.y*S),n.dd||n.d,n.shirt,n.hair); if(n.trainer&&!cur.beaten[n.id]){ X.fillStyle='#d6201c'; X.font='800 10px sans-serif'; X.fillText('!',ox+n.x*S+6,oy+n.y*S-11); } }
   person(Math.round(ox+pxw*S),Math.round(oy+pyw*S),cur.d,'#1f8a8a','#4a3020','#f2c230');
   if(at(cur.map,cur.x,cur.y)===','&&!W.mv){ X.fillStyle='#3f9a3a'; X.fillRect(Math.round(ox+cur.x*S)+2,Math.round(oy+cur.y*S)+12,12,4); }
@@ -2789,7 +2861,7 @@ function infoBox(x,y,wd,m,showNums){
     X.fillStyle='#d5dae0'; X.fillRect(x+8,y+39,wd-16,2); X.fillStyle='#3d9bff'; X.fillRect(x+8,y+39,(wd-16)*Math.min(1,m.xp/xpNeed(m.L)),2); }
 }
 function drawBattle(w,h){
-  const dark=cur.map==='cave'; const g=X.createLinearGradient(0,0,0,h); g.addColorStop(0,dark?'#5d544a':'#cfe8ff'); g.addColorStop(1,dark?'#8a7d6e':'#e9f6dd'); X.fillStyle=g; X.fillRect(0,0,w,h);
+  const dark=cur.map==='cave'||cur.map==='ruins'; const g=X.createLinearGradient(0,0,0,h); g.addColorStop(0,dark?'#5d544a':'#cfe8ff'); g.addColorStop(1,dark?'#8a7d6e':'#e9f6dd'); X.fillStyle=g; X.fillRect(0,0,w,h);
   const panelH=66, fy=78, my=h-panelH-30;
   ell(w*.72,fy+26,44,9,dark?'#6f655a':'#a8d88a',false); ell(w*.26,my+26,50,10,dark?'#6f655a':'#a8d88a',false);
   const f=foe(), me=active(), [shx,shy]=screenShake(); X.save(); X.translate(shx,shy);
