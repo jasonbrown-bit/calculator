@@ -893,7 +893,9 @@ function run(act,wasVar){
       case 'deg': angle='DEG'; break;
       case 'rad': angle='RAD'; break;
       case 'reset': menu={title:'RESET ALL?',items:[{l:'No',act:'quit'},{l:'Yes',act:'resetall'}],i:0}; break;
-      case 'resetall': hist=[]; vars={}; ansVal=Q(0); angle='DEG'; root=R(); cur={row:root,i:0}; msg={title:'MEMORY CLEARED',hint:'History, stored variables and settings are reset.'}; break;
+      case 'resetall': hist=[]; vars={}; ansVal=Q(0); angle='DEG'; root=R(); cur={row:root,i:0}; sel=-1; hypNext=false; sv='calc';
+        TB.fx=mkEd(); TB.start=Q(0); TB.step=Q(1); TB.top=0; TB.sel=0; DT.L=[[],[],[]]; DT.c=0; DT.r=0; DT.top=0; DT.ed=mkEd(); DT.fresh=true; ST.res=null;
+        msg={title:'MEMORY CLEARED',hint:'History, variables, table, data lists and settings are back to their defaults.'}; break;
       case 'on': root=R(); cur={row:root,i:0}; break;
       case '+':case '-':case '*':case '/':case 'nCr':case 'nPr':case '!':case 'sto': maybeAns(); ins(K(act)); break;
       case 'pow': maybeAns(); insT({t:'pow',e:R()},'e'); break;
@@ -1364,7 +1366,7 @@ const ALP84={'y=':'f1',window:'f2',zoom:'f3',trace:'f4',graph:'f5',xt:'frac',mat
   sto:'L:X','1':'L:Y','2':'L:Z','3':'L:θ','+':'quote','0':'space','.':'colon',neg:'qmark',enter:'solve'};
 const UNSUP={statplot:'Stat plots',link:'Linking',list:'Lists',stat:'The STAT editor and regressions',draw:'The DRAW menu',distr:'Distributions',matrix:'Matrices',
   '{':'Lists','}':'Lists','[':'Matrices',']':'Matrices',u:'Sequence mode',v:'Sequence mode',w:'Sequence mode',L1:'Lists',L2:'Lists',L3:'Lists',L4:'Lists',L5:'Lists',L6:'Lists',
-  rcl:'Recall',mem:'The memory menu',off:'Turning off',i:'Complex numbers',solve:'The equation solver',quote:'Text strings',space:'Text strings',colon:'Multiple statements',qmark:'Programs',
+  rcl:'Recall',off:'Turning off',i:'Complex numbers',solve:'The equation solver',quote:'Text strings',space:'Text strings',colon:'Multiple statements',qmark:'Programs',
   prgm:'Programs',f3:'The matrix shortcut menu',f5:'The special shortcut menu'};
 
 /* ---------- inserting into an editor ---------- */
@@ -1918,6 +1920,10 @@ function gateHtml(){
 function handle(act){
   if(S.err) return errKey(act);
   if(S.info){ S.info=null; return; }
+  if(S.confirm){ const C=S.confirm; if(act==='up'||act==='down') C.idx=1-C.idx;
+    else if(act==='1'||act==='clear'||act==='quit'||(act==='enter'&&C.idx===0)) S.confirm=null;
+    else if(act==='2'||(act==='enter'&&C.idx===1)){ S.confirm=null; C.run(); }
+    return; }
   if(S.menu) return menuKey(act);
   if(act==='apps'){ openGate(); return; }
   if(UNSUP[act]){ S.info={title:UNSUP[act],text:'is not included in this practice calculator. It covers the home screen, Y=, WINDOW, ZOOM, GRAPH, TRACE, CALC, TABLE, MODE and the MATH menu.'}; return; }
@@ -1940,6 +1946,7 @@ function handle(act){
     case 'f1': if(['home','yeq','form'].includes(S.view)) openMenu('frac'); return;
     case 'f2': if(['home','yeq','form'].includes(S.view)) openMenu('func'); return;
     case 'ins': return;
+    case 'mem': openMenu('mem'); return;
     case 'apps': openGate(); return;
   }
   switch(S.view){
@@ -1953,6 +1960,26 @@ function handle(act){
     case 'gate': return gateKey(act);
   }
 }
+function resetDefaults(){
+  Object.assign(S,{angle:'RAD',gmode:'func',float:-1,answers:'auto'});
+  Object.assign(S.W,{Xmin:-10,Xmax:10,Xscl:1,Ymin:-10,Ymax:10,Yscl:1,Xres:1,Tmin:0,Tmax:2*Math.PI,Tstep:Math.PI/24,'θmin':0,'θmax':2*Math.PI,'θstep':Math.PI/24});
+  S.T.start=0; S.T.step=1; Object.assign(S.fmt,{coord:true,grid:'off',axes:true});
+  ['func','par','pol'].forEach(m=>S.Y[m].forEach((f,i)=>{ f.style='thick'; f.color=YCOL[i]; f.on=true; }));
+  S.gc=null; gCache.key=null;
+}
+function resetRAM(){
+  resetDefaults();
+  S.home={ed:newEd(),hist:[],sel:-1}; S.ans=Q(0); S.vars={}; S.lastEntry=null;
+  S.Y.func.forEach(f=>f.ed=newEd()); S.Y.par.forEach(f=>{ f.x=newEd(); f.y=newEd(); }); S.Y.pol.forEach(f=>f.ed=newEd());
+  S.yrow=0; S.ypart='expr'; S.tbl={top:0,sel:0,col:0,colOff:0}; S.view='home';
+}
+MENUS.mem=()=>[mk('MEMORY',[['About',()=>{ S.info={title:'ABOUT',text:'Four-Line graphing calculator, a free practice tool with the TI-84 Plus CE key layout. Not an official Texas Instruments product.'}; }],
+  ['Mem Management/Delete...',null,1],['Clear Entries',()=>{ S.home.hist=[]; S.home.sel=-1; S.lastEntry=null; S.view='home'; S.info={title:'Done',text:'Entries cleared.'}; }],
+  ['ClrAllLists',null,1],['Archive',null,1],['UnArchive',null,1],['Reset...',()=>openMenu('reset')],['Group...',null,1]])];
+MENUS.reset=()=>[mk('RAM',[['All RAM...',()=>{ S.confirm={title:'RESET RAM',text:'Resetting RAM erases your Y= functions, variables, home screen history and all settings.',idx:0,run:()=>{ resetRAM(); S.info={title:'RAM cleared',text:'Everything is back to the factory defaults.'}; }}; }],
+    ['Defaults...',()=>{ S.confirm={title:'RESET DEFAULTS',text:'Restores the default mode, window, format and table settings. Your functions and variables are kept.',idx:0,run:()=>{ resetDefaults(); S.info={title:'Defaults set',text:'Settings are back to the factory defaults.'}; }}; }]]),
+  mk('ARCHIVE',[['Vars...',null,1],['Apps...',null,1],['Both...',null,1]]),
+  mk('ALL',[['All Memory...',()=>{ S.confirm={title:'RESET MEMORY',text:'Resetting all memory erases your Y= functions, variables, home screen history and all settings.',idx:0,run:()=>{ resetRAM(); S.info={title:'Memory cleared',text:'Everything is back to the factory defaults.'}; }}; }]])];
 function showErr(e){
   const ret=S.view;
   S.err={code:e.code,hint:e.hint||ERRHINT[e.code]||'',idx:0,ret,goto:e.goto,row:e.row};
@@ -1981,6 +2008,7 @@ function render84(){
   if(isG){ drawGraph84(); return; }
   let h='';
   if(S.err) h=`<div class="err84"><div class="et">ERROR: ${ERR84[S.err.code]||S.err.code}</div><div class="eo${S.err.idx===0?' on':''}"><span class="n">1:</span>Quit</div><div class="eo${S.err.idx===1?' on':''}"><span class="n">2:</span>Goto</div><div class="eh">${S.err.hint}</div></div>`;
+  else if(S.confirm) h=`<div class="err84"><div class="et">${S.confirm.title}</div><div class="eo${S.confirm.idx===0?' on':''}"><span class="n">1:</span>No</div><div class="eo${S.confirm.idx===1?' on':''}"><span class="n">2:</span>Reset</div><div class="eh">${S.confirm.text}</div></div>`;
   else if(S.info) h=`<div class="err84"><div class="et">${S.info.title}</div><div class="eh">${S.info.text}</div><div class="eh">Press any key to go back.</div></div>`;
   else if(S.menu){ const M=S.menu, tab=M.tabs[M.tab];
     h=`<div class="mt">${M.tabs.map((t,k)=>`<span class="${k===M.tab?'tsel':''}">${t.name}</span>`).join('')}</div>`;
